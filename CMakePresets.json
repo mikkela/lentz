@@ -1,0 +1,28 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "default",
+      "generator": "Ninja",
+      "binaryDir": "build/default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "LENTZ_BUILD_TESTS": "ON",
+        "CMAKE_PREFIX_PATH": "/opt/homebrew/opt/antlr4-cpp-runtime/lib/cmake"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "binaryDir": "build/release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "default", "configurePreset": "default" },
+    { "name": "release", "configurePreset": "release" }
+  ],
+  "testPresets": [
+    { "name": "default", "configurePreset": "default" }
+  ]
+}

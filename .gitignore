@@ -39,3 +39,13 @@
 
 # debug information files
 *.dwo
+
+# Build directories
+/cmake-build-debug/
+/build/
+
+# idea
+.idea
+
+# parser files (generated)
+src/frontend/parser
