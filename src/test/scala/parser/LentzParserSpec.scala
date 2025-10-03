@@ -2,9 +2,9 @@ package org.mikadadocs.lentz
 package parser
 
 import munit.FunSuite
-import fastparse._
+import fastparse.Parsed
 import ast.*
-import ast.TypeReference.{NamedType, StringType, IntType, BoolType, MoneyType}
+import ast.TypeReference.{BoolType, DeltaType, IntType, MoneyType, NamedType, StringType}
 
 final class LentzParserSpec extends FunSuite:
 
@@ -50,6 +50,19 @@ final class LentzParserSpec extends FunSuite:
       case other => fail(s"Unexpected first field: $other")
   }
 
+  test("parse delta type: ΔOption<String>") {
+    val code = "type Foo { m: ΔOption<String> }"
+    val res = LentzParser.parseTypeDeclaration(code)
+    val TypeDeclaration(_, fields, _) = res.get.value
+    fields.head match
+      case FieldDeclaration(
+      "m",
+      DeltaType(NamedType("Option", List(StringType), _), _),
+      _
+      ) => ()
+      case other => fail(s"Unexpected first field: $other")
+  }
+
   test("program: multiple type decls") {
     val code =
       """type Foo { a: Int }
@@ -71,15 +84,6 @@ final class LentzParserSpec extends FunSuite:
     assert(res.isInstanceOf[Parsed.Success[?]])
     val Program(ds) = res.get.value
     assertEquals(ds.length, 1)
-  }
-
-  test("Unicode typename start: ΔVector<String>") {
-    val code = "type T { xs: ΔVector<String> }"
-    val res  = LentzParser.parseTypeDeclaration(code)   // <- correct method name
-    val TypeDeclaration(_, fields, _) = res.get.value
-    fields.head match
-      case FieldDeclaration("xs", NamedType("ΔVector", List(StringType), _), _) => ()
-      case other => fail(s"Unexpected first field: $other")
   }
 
   test("spans captured on TypeDeclaration / FieldDeclaration / NamedType") {

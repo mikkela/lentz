@@ -2,7 +2,7 @@ package org.mikadadocs.lentz
 package parser
 
 import ast.*
-import ast.TypeReference.{IntType, StringType, BoolType, MoneyType, NamedType}
+import ast.TypeReference.{IntType, StringType, BoolType, MoneyType, NamedType, DeltaType}
 import fastparse.*
 import fastparse.{Whitespace, ParsingRun, P}
 
@@ -82,6 +82,8 @@ object LentzParser:
         | "String".!.map(_ => StringType)
         | "Bool".!.map(_ => BoolType)
         | "Money".!.map(_ => MoneyType)
+        // Δ prefix — must be before NamedType so it wins on inputs like "ΔOption<...>"
+        | spanOf("Δ" ~ typeReference).map { case (t, sp) => DeltaType(t, sp) }
         | spanOf(typeName ~ typeArgs.?).map {
         case ((n, None), sp) => NamedType(n, Nil, sp)
         case ((n, Some(as)), sp) => NamedType(n, as, sp)

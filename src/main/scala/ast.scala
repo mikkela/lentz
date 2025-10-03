@@ -12,7 +12,7 @@ object TypeReference:
   case object MoneyType extends TypeReference
   // Named T with optional type args: e.g. List<String>, Foo<A,B>
   final case class NamedType(name: String, args: List[TypeReference] = Nil, span: Span) extends TypeReference
-
+  final case class DeltaType(inner: TypeReference, span: Span) extends TypeReference // special type Δ
 final case class FieldDeclaration(name: String, tpe: TypeReference, span: Span)
 
 sealed trait Declaration
