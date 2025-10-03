@@ -4,7 +4,7 @@ package parser
 import munit.FunSuite
 import fastparse._
 import ast.*
-import ast.TypeReference.{NamedType, StringType, IntType}
+import ast.TypeReference.{NamedType, StringType, IntType, BoolType, MoneyType}
 
 final class LentzParserSpec extends FunSuite:
 
@@ -25,6 +25,15 @@ final class LentzParserSpec extends FunSuite:
     val TypeDeclaration(_, fields, _) = res.get.value
     fields.head match
       case FieldDeclaration("xs", NamedType("List", List(StringType), _), _) => ()
+      case other => fail(s"Unexpected first field: $other")
+  }
+
+  test("parse generic: Map<Bool, Money>") {
+    val code = "type Foo { xs: Map<Bool, Money> }"
+    val res = LentzParser.parseTypeDeclaration(code)
+    val TypeDeclaration(_, fields, _) = res.get.value
+    fields.head match
+      case FieldDeclaration("xs", NamedType("Map", List(BoolType, MoneyType), _), _) => ()
       case other => fail(s"Unexpected first field: $other")
   }
 

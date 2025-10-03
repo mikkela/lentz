@@ -8,6 +8,8 @@ sealed trait TypeReference
 object TypeReference:
   case object IntType extends TypeReference
   case object StringType extends TypeReference
+  case object BoolType extends TypeReference
+  case object MoneyType extends TypeReference
   // Named T with optional type args: e.g. List<String>, Foo<A,B>
   final case class NamedType(name: String, args: List[TypeReference] = Nil, span: Span) extends TypeReference
 
